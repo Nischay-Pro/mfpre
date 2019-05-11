@@ -23,7 +23,7 @@ Welcome to MFpre. This is a PreProcessor code developed to perform domain decomp
 
 | output format | generates |
 | ------ | ------ |
-| -cuda | default = no, generates datastructure for the cuda meshfree code |
+| -cuda | default = no, generates cuda datastructure for either quadtree or legacy input format |
 
 ### Input formats
 
@@ -41,7 +41,3 @@ Welcome to MFpre. This is a PreProcessor code developed to perform domain decomp
 
 | point index | X | Y | left index | right index | pressure | x velocity | y velocity | pressure | flag_1 | flag_2 | neighbours | connectivity
 | ------ | ------ | ------ | ------ | ------ | ------ | ------| ------ | ------ | ------ | ------| ------ | ------ | 
-
-### Developer Team
-* Nischay Ram Mamidi
-* Srikanth Sathyanarayana
