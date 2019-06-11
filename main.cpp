@@ -1,6 +1,6 @@
 #include <iostream> 
 #include <cstring>
-
+#include <sys/stat.h>
 #include "point.h"
 
 using namespace std;
@@ -57,6 +57,13 @@ int main(int argc, char *argv[]){
     g.cal_min_dist();
     g.partition(numPart);
 
+    // Creating a directory 
+    if (mkdir("point", 0777) == -1) 
+        cerr << "Error :  " << strerror(errno) << endl; 
+  
+    else
+        cout << " Directory created " << endl; 
+
     // Choose output format
     if (g.gpu == 1){ // gpu output for quadtree
 	    cout << " Writing quadtree cuda output " << endl;
@@ -69,7 +76,8 @@ int main(int argc, char *argv[]){
 	    cout << " Writing quadtree mpi output " << endl;
 	    g.write_output_quad(); 
     }else if (g.format == 2) { // Legacy mpi
-       cout << "Writing legacy mpi output" << endl;
+       	    cout << "Writing legacy mpi output" << endl;
+	    g.write_output_legacy();
     }
     
 

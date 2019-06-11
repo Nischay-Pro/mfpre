@@ -33,7 +33,8 @@ void Graph::write_output_gpu_legacy(){
         // create files and write basic info
 	for(int i=0; i<nParts; i++){
 		string filename = getfileName(i, nParts);
-		ofstream outfile (filename.c_str());
+		string folder = "point/";
+		ofstream outfile (folder.append(filename.c_str()));
 		outfile << totalPoints[i]+ghosts[i].size() << endl;
 	}
 
@@ -42,7 +43,8 @@ void Graph::write_output_gpu_legacy(){
 		int partnId = part[i];
 		string filename = getfileName(partnId, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		write << fixed;
 		write << setprecision(20)  << ptVec[i].x << " " << ptVec[i].y 
 			<< " " << inputToLoc[partnId][ptVec[i].left] << " " << inputToLoc[partnId][ptVec[i].right] << " " << ptVec[i].flag1 << " " << ptVec[i].flag2 << " " << ptVec[i].min_dist << " ";
@@ -59,7 +61,8 @@ void Graph::write_output_gpu_legacy(){
         for(int i=0; i < nParts; i++) {
 		string filename = getfileName(i, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		set<int>::iterator itr;
 		write << fixed << setprecision(20);
 		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
@@ -77,7 +80,8 @@ void Graph::write_output_gpu_quad(){
         // create files and write basic info
 	for(int i=0; i<nParts; i++){
 		string filename = getfileName(i, nParts);
-		ofstream outfile (filename.c_str());
+		string folder = "point/";
+		ofstream outfile (folder.append(filename.c_str()));
 		outfile << totalPoints[i]+ghosts[i].size() << endl;
 	}
 
@@ -86,7 +90,8 @@ void Graph::write_output_gpu_quad(){
 		int partnId = part[i];
 		string filename = getfileName(partnId, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		write << fixed;
 		write << setprecision(20)  << ptVec[i].x << " " << ptVec[i].y 
 			<< " " << inputToLoc[partnId][ptVec[i].left] << " " << inputToLoc[partnId][ptVec[i].right] << " " << ptVec[i].flag1 << " " << ptVec[i].flag2 << " " << ptVec[i].nx << " "<< ptVec[i].ny <<" "<< ptVec[i].qtdepth << " "<<ptVec[i].min_dist << " ";
@@ -103,7 +108,8 @@ void Graph::write_output_gpu_quad(){
         for(int i=0; i < nParts; i++) {
 		string filename = getfileName(i, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		set<int>::iterator itr;
 		write << fixed << setprecision(20);
 		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
@@ -121,7 +127,8 @@ void Graph::write_output_legacy(){
         // create files and write basic info
 	for(int i=0; i<nParts; i++){
 		string filename = getfileName(i, nParts);
-		ofstream outfile (filename.c_str());
+		string folder = "point/";
+		ofstream outfile (folder.append(filename.c_str()));
 		outfile << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
 	}
 
@@ -130,7 +137,8 @@ void Graph::write_output_legacy(){
 		int partnId = part[i];
 		string filename = getfileName(partnId, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		write << fixed;
 		write << ptVec[i].id  << setprecision(20) << " " << ptVec[i].x << " " << ptVec[i].y 
 			<< " " << inputToLoc[partnId][ptVec[i].left] << " " << inputToLoc[partnId][ptVec[i].right]<< " " << ptVec[i].flag1 << " " << ptVec[i].flag2 << " " << ptVec[i].min_dist << " ";
@@ -147,7 +155,8 @@ void Graph::write_output_legacy(){
         for(int i=0; i < nParts; i++) {
 		string filename = getfileName(i, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		set<int>::iterator itr;
 		write << fixed << setprecision(20);
 		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
@@ -164,7 +173,8 @@ void Graph::write_output_quad(){
         // create files and write basic info
 	for(int i=0; i<nParts; i++){
 		string filename = getfileName(i, nParts);
-		ofstream outfile (filename.c_str());
+		string folder = "point/";
+		ofstream outfile (folder.append(filename.c_str()));
 		outfile << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
 	}
 
@@ -173,7 +183,8 @@ void Graph::write_output_quad(){
 		int partnId = part[i];
 		string filename = getfileName(partnId, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		write << fixed;
 		write << ptVec[i].id  << setprecision(20) << " " << ptVec[i].x << " " << ptVec[i].y 
 			<< " " << inputToLoc[partnId][ptVec[i].left] << " " << inputToLoc[partnId][ptVec[i].right]
@@ -192,7 +203,8 @@ void Graph::write_output_quad(){
         for(int i=0; i < nParts; i++) {
 		string filename = getfileName(i, nParts);
 		fstream write;
-		write.open(filename.c_str(), fstream::app);
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
 		set<int>::iterator itr;
 		write << fixed << setprecision(20);
 		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
