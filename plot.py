@@ -14,6 +14,6 @@ for fname in filelist:
     for i in range(1, num+1):
         X.append(float(data[i].split(' ')[1]))
         Y.append(float(data[i].split(' ')[2]))
-    plt.scatter(X, Y, s=1.5,marker=".")
+    plt.scatter(X, Y, s=1.8,marker=".")
 
 plt.show()

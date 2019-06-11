@@ -15,10 +15,7 @@ void Graph::read_point_create_graph_legacy(){
 	string line;
 	nvtxs = 0;
 	xadjVec.push_back(adjncyVec.size());
-	int i = 0;
-	cout << "Reading Input File";
 	while(getline(infile, line)){
-		i++;
 		nvtxs++;
 		istringstream iss(line);
 		point temp ;
@@ -35,7 +32,6 @@ void Graph::read_point_create_graph_legacy(){
 		}
 		xadjVec.push_back(adjncyVec.size());
 	}
-	cout << " ... [Done]" << endl << "Points Loaded: " << i << endl;
 }
 
 void Graph::read_point_create_graph_quad(){
@@ -44,16 +40,13 @@ void Graph::read_point_create_graph_quad(){
 	string line;
 	nvtxs = 0;
 	xadjVec.push_back(adjncyVec.size());
-	int i = 0;
-	cout << "Reading Input File";
 	while(getline(infile, line)){
 		nvtxs++;
-		i++;
 		istringstream iss(line);
 		point temp ;
 		iss >> temp.id >> temp.x >> temp.y
 			>> temp.left >> temp.right
-        	        >> temp.flag1 >> temp.flag2;
+        	        >> temp.flag1 >> temp.flag2 >> temp.nx >> temp.ny >> temp.qtdepth;
 		temp.min_dist = 10000;
 		ptVec.push_back(temp);
 		int neighborId;
@@ -64,7 +57,6 @@ void Graph::read_point_create_graph_quad(){
 		}
 		xadjVec.push_back(adjncyVec.size());
 	}
-	cout << " ... [Done]" << endl << "Points Loaded: " << i << endl;
 }
 
 void Graph::read_point_create_graph_restart(){
@@ -73,9 +65,7 @@ void Graph::read_point_create_graph_restart(){
 	string line;
 	nvtxs = 0;
 	xadjVec.push_back(adjncyVec.size());
-	int i = 0;
 	while(getline(infile, line)){
-		i++;
 		nvtxs++;
 		istringstream iss(line);
 		point temp ;
@@ -92,7 +82,6 @@ void Graph::read_point_create_graph_restart(){
 		}
 		xadjVec.push_back(adjncyVec.size());
 	}
-	cout << " ... [Done]" << endl << "Points Loaded: " << i << endl;
 }
 
 void Graph::cal_min_dist(){
@@ -100,9 +89,14 @@ void Graph::cal_min_dist(){
 		for (int j = xadjVec[i]; j < xadjVec[i+1]; j++){
 			double dx = ptVec[adjncyVec[j]].x - ptVec[i].x;
 			double dy = ptVec[adjncyVec[j]].y - ptVec[i].y;
+
 			double ds = sqrt(dx*dx + dy*dy);
+
 			if(ds < ptVec[i].min_dist)
 				ptVec[i].min_dist = ds;
+
 		}
 	}
+
+
 }

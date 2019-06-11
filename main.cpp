@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iostream> 
 #include <cstring>
 
 #include "point.h"
@@ -14,24 +14,24 @@ int main(int argc, char *argv[]){
     {
        for(int i=1; i<argc; ++i)
        {
-          if(strcmp(argv[i],"--quadtree") == 0){
-        g.format = 1;
-     }
-          else if(strcmp(argv[i],"--legacy") == 0){
-        g.format = 2;
-     }
-          else if(strcmp(argv[i],"--restart") == 0){
-        g.format = 3;
-     }
-          else if(strcmp(argv[i],"--cuda") == 0){
-        if(g.format == 1){
-           g.gpu = 1;
-        }
-        else if(g.format == 2){
-           g.gpu = 2;
-        }
-     }
-     else
+          if(strcmp(argv[i],"-quadtree") == 0){
+		  g.format = 1;
+	  }
+          else if(strcmp(argv[i],"-legacy") == 0){
+		  g.format = 2;
+	  }
+          else if(strcmp(argv[i],"-restart") == 0){
+		  g.format = 3;
+	  }
+          else if(strcmp(argv[i],"-cuda") == 0){
+		  if(g.format == 1){
+			  g.gpu = 1;
+		  }
+		  else if(g.format == 2){
+			  g.gpu = 2;
+		  }
+	  }
+	  else
           {
             assert(atoi(argv[i]) > 0);
             numPart = atoi(argv[i]);
@@ -41,17 +41,17 @@ int main(int argc, char *argv[]){
 
     // choose the point format
     if (g.format == 1){ // Quad tree format
-       cout << "Quadtree input format " << endl;
-       g.read_point_create_graph_quad();
-    }else if(g.format == 2){ // Legacy 2
-       cout << "Legacy input format " << endl;
-       g.read_point_create_graph_legacy();
+	    cout << " Quadtree input format " << endl;
+	    g.read_point_create_graph_quad();
+    }else if(g.format == 2){ // Legacy
+	    cout << " Legacy input format " << endl;
+	    g.read_point_create_graph_legacy();
     }else if(g.format == 3){ // Restart
-       cout << "Restart input format " << endl;
-       g.read_point_create_graph_restart();
+	    cout << " Restart input format " << endl;
+	    g.read_point_create_graph_restart();
     }else{
-       cout << "No input format chosen or invalid input format" << endl;
-       exit(0);
+	    cout << "No input format chosen or invalid input format" << endl;
+	    exit(0);
     }
 
     g.cal_min_dist();
@@ -59,19 +59,19 @@ int main(int argc, char *argv[]){
 
     // Choose output format
     if (g.gpu == 1){ // gpu output for quadtree
-       cout << "Writing quadtree cuda output";
-       g.write_output_gpu_quad();
-       cout << " ... [Done]" << endl;
+	    cout << " Writing quadtree cuda output " << endl;
+	    g.write_output_gpu_quad();
     }
     else if (g.gpu == 2){ // gpu output for legacy
-       cout << "Writing legacy cuda output";
-       g.write_output_gpu_legacy();
-       cout << " ... [Done]" << endl;
-    }else { // All other formats
-       cout << "Writing general output";
-       g.write_output();
-       cout << " ... [Done]" << endl;
+	    cout << " Writing legacy cuda output " << endl;
+	    g.write_output_gpu_legacy();
+    }else if (g.format == 1) { // quadtree mpi
+	    cout << " Writing quadtree mpi output " << endl;
+	    g.write_output_quad(); 
+    }else if (g.format == 2) { // Legacy mpi
+       cout << "Writing legacy mpi output" << endl;
     }
+    
 
     return 0;
 }

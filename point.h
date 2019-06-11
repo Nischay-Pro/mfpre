@@ -17,6 +17,8 @@ typedef struct point {
     idx_t id;
     double x, y;
     int left, right;
+    int qtdepth;
+    int nx, ny;
     double min_dist;
     idx_t flag1, flag2;
 } point;
@@ -48,6 +50,7 @@ class Graph{
 		string getfileName(int, int );
 		void write_output_gpu_legacy();
 		void write_output_gpu_quad();
-		void write_output();
+		void write_output_legacy();
+		void write_output_quad();
 		 
 };
