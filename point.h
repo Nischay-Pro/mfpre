@@ -38,6 +38,7 @@ class Graph{
 		vector<idx_t> adjncyVec;
 		int format;
 		int gpu;
+		string file;
 		
 		// read file and build graph
 		Graph(){ format = 0; gpu = 0; };

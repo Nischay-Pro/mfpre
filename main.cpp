@@ -8,35 +8,25 @@ using namespace std;
 int main(int argc, char *argv[]){
     int numPart;
     Graph g;
-    if (argc == 1)
-       numPart = 1;
-    else
+    for(int i=1; i<argc; ++i)
     {
-       for(int i=1; i<argc; ++i)
-       {
-          if(strcmp(argv[i],"-quadtree") == 0){
-		  g.format = 1;
-	  }
-          else if(strcmp(argv[i],"-legacy") == 0){
-		  g.format = 2;
-	  }
-          else if(strcmp(argv[i],"-restart") == 0){
-		  g.format = 3;
-	  }
-          else if(strcmp(argv[i],"-cuda") == 0){
-		  if(g.format == 1){
-			  g.gpu = 1;
-		  }
-		  else if(g.format == 2){
-			  g.gpu = 2;
-		  }
-	  }
-	  else
-          {
-            assert(atoi(argv[i]) > 0);
+        if(strcmp(argv[i],"-quadtree") == 0){
+            g.format = 1;
+        }else if(strcmp(argv[i],"-legacy") == 0){
+            g.format = 2;
+        }else if(strcmp(argv[i],"-restart") == 0){
+            g.format = 3;
+        }else if(strcmp(argv[i],"-file") == 0){
+            g.file = argv[i+1];
+        }else if(strcmp(argv[i],"-cuda") == 0){
+            if(g.format == 1){
+                g.gpu = 1;
+            }else if(g.format == 2){
+                g.gpu = 2;
+            }
+        }else if(atoi(argv[i]) > 0){
             numPart = atoi(argv[i]);
-          }
-       }
+        }
     }
 
     // choose the point format
@@ -59,8 +49,7 @@ int main(int argc, char *argv[]){
 
     // Creating a directory 
     if (mkdir("point", 0777) == -1) 
-        cerr << "Error :  " << strerror(errno) << endl; 
-  
+        cerr << " point file status :  " << strerror(errno) << endl; 
     else
         cout << " Directory created " << endl; 
 
