@@ -3,3 +3,5 @@ point-input
 partGrid*
 *.o
 log
+point/
+.vscode/

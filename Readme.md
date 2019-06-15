@@ -18,13 +18,13 @@ Welcome to MFpre. This is a PreProcessor code developed to perform domain decomp
 
 | input format | loads |
 | ------ | ------ |
-| -legacy | legacy format from structured grids |
-| -quadtree | quadtree format |
-| -restart | to partition restart files with primitive values |
+| --legacy | legacy format from structured grids |
+| --quadtree | quadtree format |
+| --restart | to partition restart files with primitive values |
 
 | output format | generates |
 | ------ | ------ |
-| -cuda | default = no, generates cuda code datastructure for the particular input format you choose |
+| --cuda | default = no, generates cuda code datastructure for the particular input format you choose |
 
 ### Input formats
 

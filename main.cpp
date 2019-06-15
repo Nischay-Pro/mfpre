@@ -10,15 +10,15 @@ int main(int argc, char *argv[]){
     Graph g;
     for(int i=1; i<argc; ++i)
     {
-        if(strcmp(argv[i],"-quadtree") == 0){
+        if(strcmp(argv[i],"--quadtree") == 0){
             g.format = 1;
-        }else if(strcmp(argv[i],"-legacy") == 0){
+        }else if(strcmp(argv[i],"--legacy") == 0){
             g.format = 2;
-        }else if(strcmp(argv[i],"-restart") == 0){
+        }else if(strcmp(argv[i],"--restart") == 0){
             g.format = 3;
-        }else if(strcmp(argv[i],"-file") == 0){
+        }else if(strcmp(argv[i],"--file") == 0){
             g.file = argv[i+1];
-        }else if(strcmp(argv[i],"-cuda") == 0){
+        }else if(strcmp(argv[i],"--cuda") == 0){
             if(g.format == 1){
                 g.gpu = 1;
             }else if(g.format == 2){
