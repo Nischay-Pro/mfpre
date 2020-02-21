@@ -121,7 +121,7 @@ void Graph::write_output_gpu_quad(){
 	
 }
 
-void Graph::write_output_legacy(){
+void Graph::write_output_legacy(int numPart){
 	
 	/*  writing output routine  */
         // create files and write basic info
@@ -129,7 +129,7 @@ void Graph::write_output_legacy(){
 		string filename = getfileName(i, nParts);
 		string folder = "point/";
 		ofstream outfile (folder.append(filename.c_str()));
-		outfile << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
+		outfile << numPart << " " << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
 	}
 
         // local nodes
@@ -167,7 +167,7 @@ void Graph::write_output_legacy(){
 	}
 }
 
-void Graph::write_output_quad(){
+void Graph::write_output_quad(int numPart){
 	
 	/*  writing output routine  */
         // create files and write basic info
@@ -175,7 +175,7 @@ void Graph::write_output_quad(){
 		string filename = getfileName(i, nParts);
 		string folder = "point/";
 		ofstream outfile (folder.append(filename.c_str()));
-		outfile << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
+		outfile << numPart << " " << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
 	}
 
         // local nodes

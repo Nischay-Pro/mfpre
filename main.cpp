@@ -63,10 +63,10 @@ int main(int argc, char *argv[]){
 	    g.write_output_gpu_legacy();
     }else if (g.format == 1) { // quadtree mpi
 	    cout << " Writing quadtree mpi output " << endl;
-	    g.write_output_quad(); 
+	    g.write_output_quad(numPart); 
     }else if (g.format == 2) { // Legacy mpi
        	    cout << "Writing legacy mpi output" << endl;
-	    g.write_output_legacy();
+	    g.write_output_legacy(numPart);
     }
     
 
