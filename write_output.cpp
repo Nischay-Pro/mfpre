@@ -214,3 +214,51 @@ void Graph::write_output_quad(int numPart){
 		write.close(); 
 	}
 }
+
+void Graph::write_output_quad_regent(int numPart){
+	
+	/*  writing output routine  */
+        // create files and write basic info
+	for(int i=0; i<nParts; i++){
+		string filename = getfileName(i, nParts);
+		string folder = "point/";
+		ofstream outfile (folder.append(filename.c_str()));
+		outfile << numPart << " " << totalPoints[i]+ghosts[i].size() << " "<< totalPoints[i] << " " << ghosts[i].size() << endl;
+	}
+
+        // local nodes
+        for(int i = 0; i < nvtxs; i++){
+		int partnId = part[i];
+		string filename = getfileName(partnId, nParts);
+		fstream write;
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
+		write << fixed;
+		write << ptVec[i].id  << setprecision(20) << " " << ptVec[i].x << " " << ptVec[i].y 
+			<< " " << ptVec[i].left << " " << ptVec[i].right
+			<< " " << ptVec[i].flag1 << " " << ptVec[i].flag2 << " " << ptVec[i].nx << " "
+			<< ptVec[i].ny << " " << ptVec[i].qtdepth << " " << ptVec[i].min_dist << " ";
+		write << xadjVec[i+1]-xadjVec[i] << " ";
+		for(idx_t j=xadjVec[i]; j<xadjVec[i+1]; j++){
+			write << adjncyVec[j]+1 << " ";
+		}          
+		currGlobalNum[partnId]++;   
+		write << endl;
+		write.close(); 
+	}
+
+        // ghost nodes
+        for(int i=0; i < nParts; i++) {
+		string filename = getfileName(i, nParts);
+		fstream write;
+		string folder = "point/";
+		write.open(folder.append(filename.c_str()), fstream::app);
+		set<int>::iterator itr;
+		write << fixed << setprecision(20);
+		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
+			write << inputToGlob[*itr] << "  " << ptVec[*itr].x << " " << ptVec[*itr].y << " " << ptVec[*itr].min_dist << "  ";
+			write << endl;
+		}
+		write.close(); 
+	}
+}

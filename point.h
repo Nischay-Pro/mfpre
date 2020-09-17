@@ -38,10 +38,11 @@ class Graph{
 		vector<idx_t> adjncyVec;
 		int format;
 		int gpu;
+		int regent;
 		string file;
 		
 		// read file and build graph
-		Graph(){ format = 0; gpu = 0; };
+		Graph(){ format = 0; gpu = 0; regent = 0;};
 
 		void read_point_create_graph_legacy();
 		void read_point_create_graph_quad();
@@ -53,5 +54,6 @@ class Graph{
 		void write_output_gpu_quad();
 		void write_output_legacy(int);
 		void write_output_quad(int);
+		void write_output_quad_regent(int);
 		 
 };

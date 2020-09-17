@@ -24,6 +24,8 @@ int main(int argc, char *argv[]){
             }else if(g.format == 2){
                 g.gpu = 2;
             }
+        }else if(strcmp(argv[i], "--regent") == 0){
+            g.regent = 1;
         }else if(atoi(argv[i]) > 0){
             numPart = atoi(argv[i]);
         }
@@ -54,7 +56,11 @@ int main(int argc, char *argv[]){
         cout << " Directory created " << endl; 
 
     // Choose output format
-    if (g.gpu == 1){ // gpu output for quadtree
+    if (g.regent == 1){
+        cout << "Writing regent mpi output" << endl;
+        g.write_output_quad_regent(numPart);
+    }
+    else if (g.gpu == 1){ // gpu output for quadtree
 	    cout << " Writing quadtree cuda output " << endl;
 	    g.write_output_gpu_quad();
     }
