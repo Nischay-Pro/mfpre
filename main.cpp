@@ -2,8 +2,10 @@
 #include <cstring>
 #include <sys/stat.h>
 #include "point.h"
+#include "indicators.hpp"
 
 using namespace std;
+using namespace indicators;
 
 int main(int argc, char *argv[]){
     int numPart = 1;
@@ -36,17 +38,22 @@ int main(int argc, char *argv[]){
     // choose the point format
     if (g.format == 1){ // Quad tree format
 	    cout << "Quadtree input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_quad();
     }else if(g.format == 2){ // Legacy
 	    cout << "Legacy input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_legacy();
     }else if(g.format == 3){ // Restart
 	    cout << "Restart input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_restart();
     }else{
 	    cout << "No input format chosen or invalid input format" << endl;
 	    exit(0);
     }
+
+    cout << termcolor::green << " ✔ " << endl << termcolor::reset;
 
     g.cal_min_dist();
     g.partition(numPart);
@@ -80,6 +87,8 @@ int main(int argc, char *argv[]){
        	    cout << "Writing legacy mpi output" << endl;
 	    g.write_output_legacy(numPart);
     }
+
+    cout << "Done" << termcolor::green << " ✔ " << endl << termcolor::reset;
     
 
     return 0;

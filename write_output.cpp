@@ -278,7 +278,6 @@ void Graph::write_output_hdf5(int numPart){
 		vector<FontStyle>{FontStyle::bold}},
 		option::MaxProgress{ptVec.size()}
 	};
-	cout << "Writing ( " << ptVec.size() << " ) to disk." << endl;
 	for(int i=0; i < nParts; i++){
 		Group group(file.createGroup("/" + to_string(i + 1)));
 		Group group2(file.createGroup("/" + to_string(i + 1) + "/local"));
