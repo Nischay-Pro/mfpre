@@ -35,13 +35,13 @@ int main(int argc, char *argv[]){
 
     // choose the point format
     if (g.format == 1){ // Quad tree format
-	    cout << " Quadtree input format " << endl;
+	    cout << "Quadtree input format" << endl;
 	    g.read_point_create_graph_quad();
     }else if(g.format == 2){ // Legacy
-	    cout << " Legacy input format " << endl;
+	    cout << "Legacy input format" << endl;
 	    g.read_point_create_graph_legacy();
     }else if(g.format == 3){ // Restart
-	    cout << " Restart input format " << endl;
+	    cout << "Restart input format" << endl;
 	    g.read_point_create_graph_restart();
     }else{
 	    cout << "No input format chosen or invalid input format" << endl;
@@ -53,9 +53,9 @@ int main(int argc, char *argv[]){
 
     // Creating a directory 
     if (mkdir("point", 0777) == -1) 
-        cerr << " point file status :  " << strerror(errno) << endl; 
+        cerr << "Point file status :  " << strerror(errno) << endl; 
     else
-        cout << " Directory created " << endl; 
+        cout << "Directory created " << endl; 
 
     // Choose output format
     if (g.hdf5 == 1){

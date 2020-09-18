@@ -3,9 +3,13 @@
 
 #include "point.h"
 #include <H5Cpp.h>
+#include "indicators.hpp"
+#include <thread>
+#include <chrono>
 
 using namespace std;
 using namespace H5;
+using namespace indicators;
 
 // generates filename in string format from partition number
 string Graph::getfileName(int partID, int nParts){
@@ -266,6 +270,15 @@ void Graph::write_output_quad_regent(int numPart){
 
 void Graph::write_output_hdf5(int numPart){
 	H5File file("point/point.h5", H5F_ACC_TRUNC);
+	indicators::show_console_cursor(false);
+	BlockProgressBar bar{
+		option::BarWidth{80},
+		option::ForegroundColor{Color::white},
+		option::FontStyles{
+		vector<FontStyle>{FontStyle::bold}},
+		option::MaxProgress{ptVec.size()}
+	};
+	cout << "Writing ( " << ptVec.size() << " ) to disk." << endl;
 	for(int i=0; i < nParts; i++){
 		Group group(file.createGroup("/" + to_string(i + 1)));
 		Group group2(file.createGroup("/" + to_string(i + 1) + "/local"));
@@ -360,15 +373,19 @@ void Graph::write_output_hdf5(int numPart){
 		temp2[0] = xadjVec[i+1]-xadjVec[i];
 		attr_nbhs_count->write(PredType::NATIVE_INT, temp2);
 		delete attr_nbhs_count;
+		bar.set_option(option::PostfixText{
+			to_string(i+1) + "/" + to_string(ptVec.size())
+		});
+		bar.tick();
 	}
 
 	for(int i=0; i < nParts; i++) {
 		set<int>::iterator itr;
-		for(itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
-
+		for(auto itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
 
 		hsize_t dims[1] = { 0 };
 		dims[0] = 1;
+
 		int data[] = {inputToGlob[*itr]};
 		DataSpace *dataspace = new DataSpace(1, dims);
 		DataSet *dataset = new DataSet(file.createDataSet("/" + to_string(part[i] + 1) + "/ghost/" + to_string(data[0]), PredType::NATIVE_INT, *dataspace));
@@ -390,4 +407,6 @@ void Graph::write_output_hdf5(int numPart){
 		delete attr_min_dist;
 		}
 	}
+	bar.mark_as_completed();
+	indicators::show_console_cursor(true);
 }
