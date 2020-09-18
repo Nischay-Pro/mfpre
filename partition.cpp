@@ -20,7 +20,7 @@ void Graph::partition(int n){
             part[i] = 0;
         }
     } else {
-        int out = METIS_PartGraphKway(&nvtxs, &nWeights, xadj, adjncy,
+        METIS_PartGraphKway(&nvtxs, &nWeights, xadj, adjncy,
                     NULL, NULL, NULL, &nParts, NULL,
                     NULL, NULL, &objval, part);
         // std::cout << "output code: " << out << std::endl;

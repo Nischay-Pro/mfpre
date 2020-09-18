@@ -56,6 +56,6 @@ class Graph{
 		void write_output_legacy(int);
 		void write_output_quad(int);
 		void write_output_quad_regent(int);
-		void write_output_hdf5(int);
+		void write_output_hdf5();
 		 
 };

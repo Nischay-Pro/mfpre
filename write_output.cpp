@@ -268,7 +268,7 @@ void Graph::write_output_quad_regent(int numPart){
 	}
 }
 
-void Graph::write_output_hdf5(int numPart){
+void Graph::write_output_hdf5(){
 	H5File file("point/point.h5", H5F_ACC_TRUNC);
 	indicators::show_console_cursor(false);
 	BlockProgressBar bar{

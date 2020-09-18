@@ -56,6 +56,7 @@ int main(int argc, char *argv[]){
     cout << termcolor::green << " ✔ " << endl << termcolor::reset;
 
     g.cal_min_dist();
+    cout << "Generating " << numPart << " partitions." << endl;
     g.partition(numPart);
 
     // Creating a directory 
@@ -67,7 +68,7 @@ int main(int argc, char *argv[]){
     // Choose output format
     if (g.hdf5 == 1){
         cout << "Writing HDF5 Format" << endl;
-        g.write_output_hdf5(numPart);
+        g.write_output_hdf5();
     }
     else if (g.regent == 1){
         cout << "Writing regent mpi output" << endl;
