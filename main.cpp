@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]){
-    int numPart;
+    int numPart = 1;
     Graph g;
     for(int i=1; i<argc; ++i)
     {
@@ -26,6 +26,8 @@ int main(int argc, char *argv[]){
             }
         }else if(strcmp(argv[i], "--regent") == 0){
             g.regent = 1;
+        }else if(strcmp(argv[i], "--hdf5") == 0){
+            g.hdf5 = 1;
         }else if(atoi(argv[i]) > 0){
             numPart = atoi(argv[i]);
         }
@@ -56,7 +58,11 @@ int main(int argc, char *argv[]){
         cout << " Directory created " << endl; 
 
     // Choose output format
-    if (g.regent == 1){
+    if (g.hdf5 == 1){
+        cout << "Writing HDF5 Format" << endl;
+        g.write_output_hdf5(numPart);
+    }
+    else if (g.regent == 1){
         cout << "Writing regent mpi output" << endl;
         g.write_output_quad_regent(numPart);
     }
