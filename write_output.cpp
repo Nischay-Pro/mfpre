@@ -372,6 +372,8 @@ void Graph::write_output_hdf5(int numPart){
 		temp2[0] = xadjVec[i+1]-xadjVec[i];
 		attr_nbhs_count->write(PredType::NATIVE_INT, temp2);
 		delete attr_nbhs_count;
+		delete dataset;
+		delete dataspace;
 		bar.set_option(option::PostfixText{
 			to_string(i+1) + "/" + to_string(ptVec.size())
 		});
@@ -404,6 +406,8 @@ void Graph::write_output_hdf5(int numPart){
 		temp[0] = ptVec[*itr].min_dist;
 		attr_min_dist->write(PredType::NATIVE_DOUBLE, temp);
 		delete attr_min_dist;
+		delete dataset;
+		delete dataspace;
 		}
 	}
 	bar.mark_as_completed();
