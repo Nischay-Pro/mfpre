@@ -269,20 +269,25 @@ void Graph::write_output_quad_regent(int numPart){
 }
 
 void Graph::write_output_hdf5(){
-	H5File file("point/point.h5", H5F_ACC_TRUNC);
+	FileAccPropList fapl(FileAccPropList::DEFAULT);
+	int mdc_nelmts;
+	size_t rdcc_nelmts;
+	size_t rdcc_nbytes;
+	double rdcc_w0;
+	fapl.getCache(mdc_nelmts,rdcc_nelmts,rdcc_nbytes,rdcc_w0);
+	// fapl.setCache(mdc_nelmts, rdcc_nelmts, 1e+8, 1);
+	H5File file("point/point.h5", H5F_ACC_TRUNC, FileCreatPropList::DEFAULT, fapl);
 	indicators::show_console_cursor(false);
 	BlockProgressBar bar{
 		option::BarWidth{80},
 		option::ForegroundColor{Color::white},
 		option::FontStyles{
 		vector<FontStyle>{FontStyle::bold}},
-		option::MaxProgress{ptVec.size()}
+		option::MaxProgress{100}
 	};
+	
 	for(int i=0; i < nParts; i++){
 		Group group(file.createGroup("/" + to_string(i + 1)));
-		Group group2(file.createGroup("/" + to_string(i + 1) + "/local"));
-		Group group3(file.createGroup("/" + to_string(i + 1) + "/ghost"));
-
 		hsize_t dims[1] = {1};
 		DataSpace attr_dataspace = DataSpace (1, dims);
 		Attribute attribute_total = group.createAttribute("total", PredType::NATIVE_INT, attr_dataspace);
@@ -296,120 +301,106 @@ void Graph::write_output_hdf5(){
 		temp[0] = ghosts[i].size();
 		attribute_ghost.write(PredType::NATIVE_INT, temp);
 	}
-
+	
+	vector<int> locals[nParts];
+	
 	for(int i = 0; i < nvtxs; i++){
-		hsize_t dims[1] = { 0 };
-		dims[0] = xadjVec[i+1]-xadjVec[i];
-		int conn[dims[0]] = {0};
-		int k = 0;
-		for(idx_t j=xadjVec[i]; j<xadjVec[i+1]; j++){
-			conn[k] = inputToLoc[part[i]][adjncyVec[j]+1];
-			k++;
-		}  
-		DataSpace *dataspace = new DataSpace(1, dims);
-		DataSet *dataset = new DataSet(file.createDataSet("/" + to_string(part[i] + 1) + "/local/" + to_string(ptVec[i].id), PredType::NATIVE_INT, *dataspace));
-		dataset->write(conn, PredType::NATIVE_INT);
-
-		hsize_t dims_attr[1] = { 1 };
-		double temp[dims_attr[0]] = {ptVec[i].x};
-		DataSpace attr_dataspace = DataSpace(1, dims_attr);
-
-		Attribute *attr_x = new Attribute(dataset->createAttribute("x", PredType::NATIVE_DOUBLE, attr_dataspace));
-		attr_x->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_x;
-
-		Attribute *attr_y = new Attribute(dataset->createAttribute("y", PredType::NATIVE_DOUBLE, attr_dataspace));
-		temp[0] = ptVec[i].y;
-		attr_y->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_y;
-
-		Attribute *attr_nx = new Attribute(dataset->createAttribute("nx", PredType::NATIVE_DOUBLE, attr_dataspace));
-		temp[0] = ptVec[i].nx;
-		attr_nx->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_nx;
-
-		Attribute *attr_ny = new Attribute(dataset->createAttribute("ny", PredType::NATIVE_DOUBLE, attr_dataspace));
-		temp[0] = ptVec[i].ny;
-		attr_ny->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_ny;
-
-		Attribute *attr_min_dist = new Attribute(dataset->createAttribute("min_dist", PredType::NATIVE_DOUBLE, attr_dataspace));
-		temp[0] = ptVec[i].min_dist;
-		attr_min_dist->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_min_dist;
-
-		int temp2[dims_attr[0]] = {inputToLoc[part[i]][ptVec[i].left]};
-		Attribute *attr_left = new Attribute(dataset->createAttribute("left", PredType::NATIVE_INT, attr_dataspace));
-		attr_left->write(PredType::NATIVE_INT, temp2);
-		delete attr_left;
-
-		Attribute *attr_right = new Attribute(dataset->createAttribute("right", PredType::NATIVE_INT, attr_dataspace));
-		temp2[0] = inputToLoc[part[i]][ptVec[i].right];
-		attr_right->write(PredType::NATIVE_INT, temp2);
-		delete attr_right;
-
-		Attribute *attr_qtdepth = new Attribute(dataset->createAttribute("qtdepth", PredType::NATIVE_INT, attr_dataspace));
-		if (format == 2){
-			temp2[0] = 0;
-		}
-		else{
-			temp2[0] = ptVec[i].qtdepth;
-		}
-		attr_qtdepth->write(PredType::NATIVE_INT, temp2);
-		delete attr_qtdepth;
-
-		Attribute *attr_flag1 = new Attribute(dataset->createAttribute("flag1", PredType::NATIVE_INT, attr_dataspace));
-		temp2[0] = ptVec[i].flag1;
-		attr_flag1->write(PredType::NATIVE_INT, temp2);
-		delete attr_flag1;
-
-		Attribute *attr_flag2 = new Attribute(dataset->createAttribute("flag2", PredType::NATIVE_INT, attr_dataspace));
-		temp2[0] = ptVec[i].flag2;
-		attr_flag2->write(PredType::NATIVE_INT, temp2);
-		delete attr_flag2;
-
-		Attribute *attr_nbhs_count = new Attribute(dataset->createAttribute("nbhs_count", PredType::NATIVE_INT, attr_dataspace));
-		temp2[0] = xadjVec[i+1]-xadjVec[i];
-		attr_nbhs_count->write(PredType::NATIVE_INT, temp2);
-		delete attr_nbhs_count;
-		delete dataset;
-		delete dataspace;
-		bar.set_option(option::PostfixText{
-			to_string(i+1) + "/" + to_string(ptVec.size())
-		});
-		bar.tick();
+		locals[part[i]].push_back(i);
 	}
 
-	for(int i=0; i < nParts; i++) {
-		set<int>::iterator itr;
-		for(auto itr = ghosts[i].begin(); itr!=ghosts[i].end(); itr++){
+	int pog = ceil(ptVec.size() / 100);
 
-		hsize_t dims[1] = { 0 };
-		dims[0] = 1;
+	int progress = 1;
+	for(int i = 0; i < nParts; i++){
+		auto localArray = new double[totalPoints[i]][30];
+		auto ghostArray = new double[ghosts[i].size()][4];
+		hsize_t dims[2];
+		hsize_t chunk_dims[2] = { ceil(totalPoints[i] / 100) , 30 };
 
-		int data[] = {inputToGlob[*itr]};
-		DataSpace *dataspace = new DataSpace(1, dims);
-		DataSet *dataset = new DataSet(file.createDataSet("/" + to_string(part[i] + 1) + "/ghost/" + to_string(data[0]), PredType::NATIVE_INT, *dataspace));
-		dataset->write(data, PredType::NATIVE_INT);
+		// Local Points
+		dims[0] = totalPoints[i];
+		dims[1] = 30;
+		int ptidx = 0;
+		for(auto itr: locals[i]){
+			auto point = ptVec[itr];
+			auto nbhs = xadjVec[itr+1]-xadjVec[itr];
+			localArray[ptidx][0] = itr;
+			localArray[ptidx][1] = point.x;
+			localArray[ptidx][2] = point.y;
+			localArray[ptidx][3] = point.nx;
+			localArray[ptidx][4] = point.ny;
+			localArray[ptidx][5] = point.min_dist;
 
-		double temp[] = {ptVec[*itr].x};
-		Attribute *attr_x = new Attribute(dataset->createAttribute("x", PredType::NATIVE_DOUBLE, *dataspace));
-		attr_x->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_x;
-
-		temp[0] = ptVec[*itr].y;
-		Attribute *attr_y = new Attribute(dataset->createAttribute("y", PredType::NATIVE_DOUBLE, *dataspace));
-		attr_y->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_y;
-
-		Attribute *attr_min_dist = new Attribute(dataset->createAttribute("min_dist", PredType::NATIVE_DOUBLE, *dataspace));
-		temp[0] = ptVec[*itr].min_dist;
-		attr_min_dist->write(PredType::NATIVE_DOUBLE, temp);
-		delete attr_min_dist;
-		delete dataset;
-		delete dataspace;
+			localArray[ptidx][6] = point.left;
+			localArray[ptidx][7] = point.right;
+			int qtdepth = 0;
+			if (format == 2){
+				qtdepth = 0;
+			}
+			else{
+				qtdepth = point.qtdepth;
+			}
+			localArray[ptidx][8] = qtdepth;
+			localArray[ptidx][9] = point.flag1;
+			localArray[ptidx][10] = point.flag2;
+			localArray[ptidx][11] = nbhs;
+			int k = 12;
+			for(idx_t j=xadjVec[itr]; j<xadjVec[itr+1]; j++){
+				localArray[ptidx][k] = inputToLoc[i][adjncyVec[j]+1];
+				k++;
+			}
+			while(k < 30){
+				localArray[ptidx][k] = -1;
+				k++;
+			}
+			ptidx++;
+			if(progress % pog == 0){
+				bar.set_option(option::PostfixText{
+					to_string(progress) + "/" + to_string(ptVec.size())
+				});
+				bar.tick();
+			}
+			progress++;
 		}
+		DataSpace *dataspace = new DataSpace(2, dims);
+		DSetCreatPropList *plist = new DSetCreatPropList;
+		plist->setChunk(2, chunk_dims);
+		plist->setDeflate(6);
+		DataSet *dataset = new DataSet(file.createDataSet("/" + to_string(i + 1) + "/local", PredType::NATIVE_DOUBLE, *dataspace, *plist));
+		dataset->write(localArray, PredType::NATIVE_DOUBLE);
+		delete plist;
+		delete localArray;
+		delete dataspace;
+		delete dataset;
+
+		// Ghost Points
+		dims[0] = ghosts[i].size();
+		dims[1] = 4;
+		ptidx = 0;
+		for(auto itr: ghosts[i]){
+			auto point = ptVec[itr];
+			ghostArray[ptidx][0] = inputToGlob[itr];
+			ghostArray[ptidx][1] = point.x;
+			ghostArray[ptidx][2] = point.y;
+			ghostArray[ptidx][3] = point.min_dist;
+			ptidx++;
+		}
+
+		DSetCreatPropList *plist2 = new DSetCreatPropList;
+		chunk_dims[0] = ceil(ghosts[i].size() / 100);
+		if(chunk_dims[0] == 0) chunk_dims[0]++;
+		chunk_dims[1] = 4;
+		plist2->setChunk(2, chunk_dims);
+		plist2->setDeflate(6);
+		DataSpace *dataspace2 = new DataSpace(2, dims);
+		DataSet *dataset2 = new DataSet(file.createDataSet("/" + to_string(i + 1) + "/ghost", PredType::NATIVE_DOUBLE, *dataspace2, *plist2));
+		dataset2->write(ghostArray, PredType::NATIVE_DOUBLE);
+		delete ghostArray;
+		delete plist2;
+		delete dataspace2;
+		delete dataset2;
 	}
+
 	bar.mark_as_completed();
 	indicators::show_console_cursor(true);
 }
