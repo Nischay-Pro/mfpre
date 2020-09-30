@@ -2,11 +2,13 @@
 #include <cstring>
 #include <sys/stat.h>
 #include "point.h"
+#include "indicators.hpp"
 
 using namespace std;
+using namespace indicators;
 
 int main(int argc, char *argv[]){
-    int numPart;
+    int numPart = 1;
     Graph g;
     for(int i=1; i<argc; ++i)
     {
@@ -26,6 +28,8 @@ int main(int argc, char *argv[]){
             }
         }else if(strcmp(argv[i], "--regent") == 0){
             g.regent = 1;
+        }else if(strcmp(argv[i], "--hdf5") == 0){
+            g.hdf5 = 1;
         }else if(atoi(argv[i]) > 0){
             numPart = atoi(argv[i]);
         }
@@ -33,30 +37,40 @@ int main(int argc, char *argv[]){
 
     // choose the point format
     if (g.format == 1){ // Quad tree format
-	    cout << " Quadtree input format " << endl;
+	    cout << "Quadtree input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_quad();
     }else if(g.format == 2){ // Legacy
-	    cout << " Legacy input format " << endl;
+	    cout << "Legacy input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_legacy();
     }else if(g.format == 3){ // Restart
-	    cout << " Restart input format " << endl;
+	    cout << "Restart input format" << endl;
+        cout << "Reading File";
 	    g.read_point_create_graph_restart();
     }else{
 	    cout << "No input format chosen or invalid input format" << endl;
 	    exit(0);
     }
 
+    cout << termcolor::green << " ✔ " << endl << termcolor::reset;
+
     g.cal_min_dist();
+    cout << "Generating " << numPart << " partitions." << endl;
     g.partition(numPart);
 
     // Creating a directory 
     if (mkdir("point", 0777) == -1) 
-        cerr << " point file status :  " << strerror(errno) << endl; 
+        cerr << "Point file status :  " << strerror(errno) << endl; 
     else
-        cout << " Directory created " << endl; 
+        cout << "Directory created " << endl; 
 
     // Choose output format
-    if (g.regent == 1){
+    if (g.hdf5 == 1){
+        cout << "Writing HDF5 Format" << endl;
+        g.write_output_hdf5();
+    }
+    else if (g.regent == 1){
         cout << "Writing regent mpi output" << endl;
         g.write_output_quad_regent(numPart);
     }
@@ -74,6 +88,8 @@ int main(int argc, char *argv[]){
        	    cout << "Writing legacy mpi output" << endl;
 	    g.write_output_legacy(numPart);
     }
+
+    cout << "Done" << termcolor::green << " ✔ " << endl << termcolor::reset;
     
 
     return 0;

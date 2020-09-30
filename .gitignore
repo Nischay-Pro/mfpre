@@ -5,3 +5,5 @@ partGrid*
 log
 point/
 .vscode/
+build
+*.txt
