@@ -324,15 +324,15 @@ void Graph::write_output_hdf5(){
 		for(auto itr: locals[i]){
 			auto point = ptVec[itr];
 			auto nbhs = xadjVec[itr+1]-xadjVec[itr];
-			localArray[ptidx][0] = itr;
+			localArray[ptidx][0] = itr + 1;
 			localArray[ptidx][1] = point.x;
 			localArray[ptidx][2] = point.y;
 			localArray[ptidx][3] = point.nx;
 			localArray[ptidx][4] = point.ny;
 			localArray[ptidx][5] = point.min_dist;
 
-			localArray[ptidx][6] = point.left;
-			localArray[ptidx][7] = point.right;
+			localArray[ptidx][6] = inputToLoc[i][point.left];
+			localArray[ptidx][7] = inputToLoc[i][point.right];
 			int qtdepth = 0;
 			if (format == 2){
 				qtdepth = 0;
